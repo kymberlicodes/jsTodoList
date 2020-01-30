@@ -3,22 +3,25 @@
         <title>JavaScript Todo List</title>
         <link rel="stylesheet" type="text/css" href="style.css">
         <script type="text/javascript" src="script.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
 
     <body>
         <div class="flex">
-            <div>
+            <div class="header">
                 <div class="flex">
                     <h1>Todo List</h1>
                 </div>
         
-                <div>
-                    <input type="text" placeholder="Enter Todo Here" class="todo-input">
-                    <input type="submit" onClick="addTodo()">
+                <div class="row">
+                    <div class="auto-margin">
+                        <input type="text" placeholder="Enter Todo Here" class="todo-input">
+                        <input type="submit" onClick="addTodo()">
+                    </div>
                 </div>
             </div>
     
-            <div>
+            <div class="list">
                 <ul class='todo-list'>
                     
                 </ul>        
