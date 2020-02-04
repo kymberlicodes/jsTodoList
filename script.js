@@ -35,16 +35,28 @@ function toggleTodo() {
 
 function deleteTodo() {
     var id = this.parentElement.id;
-    var todoAddress = todoItems.indexOf(getTodoById(id));
-
-    todoItems.splice(todo, 1);
-    alert('deleted!');
+    var todo = getTodoById(id);
+    var todoIndex = getTodoIndex(id);
+    todoItems.splice(todoIndex, 1);
+    
+    renderTodos();
+    alert(`Deleted ${todo.name}!`);
 }
 
 function editTodo() {
     var id = this.parentElement.id;
     var todo = getTodoById(id);
-    alert('edited!');
+    var todoIndex = getTodoIndex(id);
+    // change the todo item to a text box
+    // todo.getElementById(id).style.display = none;
+    toggleEdit();
+    // document.getElementsByClassName('edit-field').style.display = contents;
+    // allow user to change the name
+    // update the todo name
+    // render the list again
+    // renderTodos();
+
+    // alert('edited!');
 }
 
 function getTodoById(id) {
@@ -55,9 +67,42 @@ function getTodoById(id) {
     }
 }
 
+function getTodoIndex(id) {
+    for(var i = 0; i < todoItems.length; i++) {
+        if(todoItems[i].id === id) {
+            return todoItems.indexOf(todoItems[i]);
+        }
+    }
+}
+
 function clearInputs() {
     var todoInput = document.getElementsByClassName('todo-input')[0];
     todoInput.value = '';
+}
+
+function toggleEdit(todoItem) {
+    document.getElementsByClassName('checkbox-field').style.display = "none";
+    document.getElementsByClassName('edit-field').style.display = "contents";
+}
+
+function getTodoHtmlTemplate(todoItem) {
+    return `
+        <li class="todo" id="${ todoItem.id }">
+            <div class="checkbox-field">
+                <input class="checkbox" type="checkbox"> ${ todoItem.name } 
+                <button class="edit btn"><i class="fa fa-pencil-square-o"></i></button>
+                <button class="delete btn"><i class="fa fa-trash"></i></button>
+            </div>
+            <div class="edit-field">
+                <input type="text">
+                <button>
+                    Cancel
+                </button>
+                <button>
+                    Save
+                </button>
+            </div>
+        </li>`;
 }
 
 function renderTodos() {
@@ -66,7 +111,7 @@ function renderTodos() {
 
     for(var i = 0; i < todoItems.length; i++) {
         var todoItem = todoItems[i];
-        html += `<li class="todo" id="${ todoItem.id }"><input class="checkbox" type="checkbox"> ${ todoItem.name } <button class="delete btn"><i class="fa fa-trash"></i></button></li>`;
+        html += getTodoHtmlTemplate(todoItem);
     }
 
     todoListEl.innerHTML = html;
@@ -80,5 +125,10 @@ function renderTodos() {
     var deleteBoxes = document.getElementsByClassName('delete');
     for(var i = 0; i < deleteBoxes.length; i++) {
         deleteBoxes[i].addEventListener('click', deleteTodo);
+    }
+
+    var editBoxes = document.getElementsByClassName('edit');
+    for(var i = 0; i < editBoxes.length; i++) {
+        editBoxes[i].addEventListener('click', editTodo);
     }
 }

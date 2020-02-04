@@ -5,10 +5,15 @@
 ul {
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 li {
     display: inline;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
 }
 
 body {
