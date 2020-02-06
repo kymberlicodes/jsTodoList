@@ -34,7 +34,7 @@ function toggleTodo() {
 }
 
 function deleteTodo() {
-    var id = this.parentElement.id;
+    var id = this.parentElement.parentElement.id;
     var todo = getTodoById(id);
     var todoIndex = getTodoIndex(id);
     todoItems.splice(todoIndex, 1);
@@ -44,19 +44,65 @@ function deleteTodo() {
 }
 
 function editTodo() {
-    var id = this.parentElement.id;
+    var id = this.parentElement.parentElement.id;
     var todo = getTodoById(id);
-    var todoIndex = getTodoIndex(id);
-    // change the todo item to a text box
-    // todo.getElementById(id).style.display = none;
-    toggleEdit();
-    // document.getElementsByClassName('edit-field').style.display = contents;
-    // allow user to change the name
-    // update the todo name
-    // render the list again
-    // renderTodos();
+    var inEditMode = true;
+    var previousTodoName = document.getElementById(id).getElementsByClassName("edit-todo-input")[0].value;
+    var updatedTodoName = document.getElementById(id).getElementsByClassName("edit-todo-input")[0].value;
+    toggleEditMode(inEditMode, todo);
 
-    // alert('edited!');
+    if(document.getElementById(id).getElementsByClassName("update")[0].onclick) {
+        modifyTodoText(todo.name, updatedTodoName);
+    } else if (document.getElementById(id).getElementsByClassName("cancel")[0].onclick) {
+        modifyTodoText(todo.name, previousTodoName);
+    }
+
+    inEditMode = false;
+    toggleEditMode(inEditMode, todo);
+    renderTodos();
+    
+    alert('edited!');
+}
+
+function modifyTodoText(todo, text) {
+    todo.name = text;
+}
+
+function toggleEditMode(inEditMode, todo) {
+    var hide = 'none';
+    var show = 'block';
+    var checkbox = document.getElementById(todo.id).getElementsByClassName("checkbox-field");
+    var editField = document.getElementById(todo.id).getElementsByClassName("edit-field");
+
+    if(inEditMode) {
+        checkbox[0].style.display = hide;
+        editField[0].style.display = show;
+    } else {
+        checkbox[0].style.display = show;
+        editField[0].style.display = hide;
+    }
+}
+
+function getTodoHtmlTemplate(todoItem) {
+    return `
+        <li class="todo" id="${ todoItem.id }">
+            <div class="checkbox-field">
+                <input class="checkbox" type="checkbox"> ${ todoItem.name } 
+                <button class="btn edit"><i class="fa fa-pencil-square-o"></i></button>
+                <button class="btn delete"><i class="fa fa-trash"></i></button>
+            </div>
+            <div class="hide edit-field">
+                <input type="text" placeholder="Edit ${todoItem.name}" class="edit-todo-input">
+                <div class="edit-todo-btn-container">
+                    <button class="cancel" onClick="modifyText()">
+                        Cancel
+                    </button>
+                    <button class="update" value="submit" onClick="modifyText()">
+                        Update
+                    </button>
+                </div>
+            </div>
+        </li>`;
 }
 
 function getTodoById(id) {
@@ -78,31 +124,6 @@ function getTodoIndex(id) {
 function clearInputs() {
     var todoInput = document.getElementsByClassName('todo-input')[0];
     todoInput.value = '';
-}
-
-function toggleEdit(todoItem) {
-    document.getElementsByClassName('checkbox-field').style.display = "none";
-    document.getElementsByClassName('edit-field').style.display = "contents";
-}
-
-function getTodoHtmlTemplate(todoItem) {
-    return `
-        <li class="todo" id="${ todoItem.id }">
-            <div class="checkbox-field">
-                <input class="checkbox" type="checkbox"> ${ todoItem.name } 
-                <button class="edit btn"><i class="fa fa-pencil-square-o"></i></button>
-                <button class="delete btn"><i class="fa fa-trash"></i></button>
-            </div>
-            <div class="edit-field">
-                <input type="text">
-                <button>
-                    Cancel
-                </button>
-                <button>
-                    Save
-                </button>
-            </div>
-        </li>`;
 }
 
 function renderTodos() {
