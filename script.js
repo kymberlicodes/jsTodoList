@@ -21,7 +21,7 @@ function generateId() {
 }
 
 function toggleTodo() {
-    var id = this.parentElement.id;
+    var id = this.parentElement.parentElement.id;
     var todo = getTodoById(id);
 
     todo.checked = !todo.checked;
@@ -47,39 +47,35 @@ function editTodo() {
     var id = this.parentElement.parentElement.id;
     var todo = getTodoById(id);
     var inEditMode = true;
-    var previousTodoName = document.getElementById(id).getElementsByClassName("edit-todo-input")[0].value;
-    var updatedTodoName = document.getElementById(id).getElementsByClassName("edit-todo-input")[0].value;
-    toggleEditMode(inEditMode, todo);
-
-    if(document.getElementById(id).getElementsByClassName("update")[0].onclick) {
-        modifyTodoText(todo.name, updatedTodoName);
-    } else if (document.getElementById(id).getElementsByClassName("cancel")[0].onclick) {
-        modifyTodoText(todo.name, previousTodoName);
-    }
-
-    inEditMode = false;
-    toggleEditMode(inEditMode, todo);
-    renderTodos();
-    
-    alert('edited!');
-}
-
-function modifyTodoText(todo, text) {
-    todo.name = text;
-}
-
-function toggleEditMode(inEditMode, todo) {
-    var hide = 'none';
-    var show = 'block';
+    var previousTodoName = todo.name;
     var checkbox = document.getElementById(todo.id).getElementsByClassName("checkbox-field");
     var editField = document.getElementById(todo.id).getElementsByClassName("edit-field");
-
+    var hide = 'none';
+    var show = 'block';
+    
     if(inEditMode) {
         checkbox[0].style.display = hide;
         editField[0].style.display = show;
     } else {
         checkbox[0].style.display = show;
         editField[0].style.display = hide;
+    }
+
+    // renderTodos();
+    
+    alert('edited!');
+}
+
+function modifyTodoText(todo, text) {
+    var id = this.parentElement.parentElement.id;
+    var todo = getTodoById(id);
+    var previousTodoName = todo.name;
+    var updatedTodoName = document.getElementById(id).getElementsByClassName("edit-todo-input")[0].value;
+
+    if(document.getElementById(id).getElementsByClassName("update")[0].onclick) {
+        modifyTodoText(todo.name, updatedTodoName);
+    } else if (document.getElementById(id).getElementsByClassName("cancel")[0].onclick) {
+        modifyTodoText(todo.name, previousTodoName);
     }
 }
 
@@ -94,10 +90,10 @@ function getTodoHtmlTemplate(todoItem) {
             <div class="hide edit-field">
                 <input type="text" placeholder="Edit ${todoItem.name}" class="edit-todo-input">
                 <div class="edit-todo-btn-container">
-                    <button class="cancel" onClick="modifyText()">
+                    <button class="cancel" onClick="modifyTodoText()">
                         Cancel
                     </button>
-                    <button class="update" value="submit" onClick="modifyText()">
+                    <button class="update" value="submit" onClick="modifyTodoText()">
                         Update
                     </button>
                 </div>
