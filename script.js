@@ -21,62 +21,47 @@ function generateId() {
 }
 
 function toggleTodo() {
-    var id = this.parentElement.parentElement.id;
-    var todo = getTodoById(id);
+    var todoEl = this.closest(".todo");
+    var todo = getTodoById(todoEl.id);
 
     todo.checked = !todo.checked;
 
     if(todo.checked) {
-        document.getElementById(todo.id).classList.add('done');
+        todoEl.classList.add('done');
     } else {
-        document.getElementById(todo.id).classList.remove('done');
+        todoEl.classList.remove('done');
     }
 }
 
 function deleteTodo() {
-    var id = this.parentElement.parentElement.id;
-    var todo = getTodoById(id);
-    var todoIndex = getTodoIndex(id);
+    var todoEl = this.closest(".todo");
+    var todoIndex = getTodoIndex(todoEl.id);
     todoItems.splice(todoIndex, 1);
     
     renderTodos();
-    alert(`Deleted ${todo.name}!`);
 }
 
-function editTodo() {
-    var id = this.parentElement.parentElement.id;
-    var todo = getTodoById(id);
-    var inEditMode = true;
-    var previousTodoName = todo.name;
-    var checkbox = document.getElementById(todo.id).getElementsByClassName("checkbox-field");
-    var editField = document.getElementById(todo.id).getElementsByClassName("edit-field");
-    var hide = 'none';
-    var show = 'block';
-    
-    if(inEditMode) {
-        checkbox[0].style.display = hide;
-        editField[0].style.display = show;
-    } else {
-        checkbox[0].style.display = show;
-        editField[0].style.display = hide;
-    }
-
-    // renderTodos();
-    
-    alert('edited!');
+function openEditMode() {
+    var todoEl = this.closest(".todo");
+    todoEl.classList.add('edit-mode');
 }
 
-function modifyTodoText(todo, text) {
-    var id = this.parentElement.parentElement.id;
-    var todo = getTodoById(id);
-    var previousTodoName = todo.name;
-    var updatedTodoName = document.getElementById(id).getElementsByClassName("edit-todo-input")[0].value;
+function cancelEditMode() {
+    var todoEl = this.closest(".todo");
+    todoEl.classList.remove('edit-mode');
+}
 
-    if(document.getElementById(id).getElementsByClassName("update")[0].onclick) {
-        modifyTodoText(todo.name, updatedTodoName);
-    } else if (document.getElementById(id).getElementsByClassName("cancel")[0].onclick) {
-        modifyTodoText(todo.name, previousTodoName);
-    }
+function updateTodo() {
+    var todoEl = this.closest(".todo");
+    var todoInput = todoEl.querySelector('.edit-todo-input');
+    var newName = todoInput.value;
+    
+    var todo = getTodoById(todoEl.id);
+    todo.name = newName;
+
+    todoEl.classList.remove('edit-mode');
+
+    renderTodos();
 }
 
 function getTodoHtmlTemplate(todoItem) {
@@ -87,15 +72,11 @@ function getTodoHtmlTemplate(todoItem) {
                 <button class="btn edit"><i class="fa fa-pencil-square-o"></i></button>
                 <button class="btn delete"><i class="fa fa-trash"></i></button>
             </div>
-            <div class="hide edit-field">
-                <input type="text" placeholder="Edit ${todoItem.name}" class="edit-todo-input">
+            <div class="edit-field">
+                <input type="text" placeholder="Edit ${ todoItem.name }" class="edit-todo-input">
                 <div class="edit-todo-btn-container">
-                    <button class="cancel" onClick="modifyTodoText()">
-                        Cancel
-                    </button>
-                    <button class="update" value="submit" onClick="modifyTodoText()">
-                        Update
-                    </button>
+                    <button class="cancel">Cancel</button>
+                    <button class="update" value="submit">Update</button>
                 </div>
             </div>
         </li>`;
@@ -133,7 +114,6 @@ function renderTodos() {
 
     todoListEl.innerHTML = html;
 
-    // add change event
     var checkboxes = document.getElementsByClassName('checkbox');
     for(var i = 0; i < checkboxes.length; i++) {
         checkboxes[i].addEventListener('change', toggleTodo);
@@ -146,6 +126,16 @@ function renderTodos() {
 
     var editBoxes = document.getElementsByClassName('edit');
     for(var i = 0; i < editBoxes.length; i++) {
-        editBoxes[i].addEventListener('click', editTodo);
+        editBoxes[i].addEventListener('click', openEditMode);
+    }
+
+    var cancelButtons = document.getElementsByClassName('cancel');
+    for(var i = 0; i < cancelButtons.length; i++) {
+        cancelButtons[i].addEventListener('click', cancelEditMode);
+    }
+
+    var updateButtons = document.getElementsByClassName('update');
+    for(var i = 0; i < updateButtons.length; i++) {
+        updateButtons[i].addEventListener('click', updateTodo);
     }
 }

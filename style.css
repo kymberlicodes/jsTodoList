@@ -105,6 +105,18 @@ body {
     margin-bottom: 25px;
 }
 
+.todo .edit-field {
+    display: none;
+}
+
+.todo.edit-mode .checkbox-field {
+    display: none;
+}
+
+.todo.edit-mode .edit-field {
+    display: block;
+}
+
 .todo:last-of-type {
     margin-bottom: 0px;
 }
